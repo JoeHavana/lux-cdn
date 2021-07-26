@@ -1,0 +1,7 @@
+{% load static wagtailcore_tags %}
+<section class="container">
+    <div class="jumbotron">
+		<div class="text-center">{{ self.title|richtext }}</div>
+		<div>{{ self.content|richtext }}</div>
+	</div>
+</section>

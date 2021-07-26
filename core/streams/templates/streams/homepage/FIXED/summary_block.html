@@ -1,0 +1,30 @@
+{% load static wagtailcore_tags %} <!-- This is to work width |pipes -->
+
+
+  <section class="pb-4">
+    <div class="container pb-5">
+          <div class="mb-4 text-center">
+             <h2 class="display-3">{{ self.section_title }}</h2>
+               <div class="div-line mb-2"></div>
+             <p class="h5 text-muted">{{ self.section_subtitle }}</p>
+            <hr>
+          </div>
+
+        <div class="col-xs-12 row text-center">
+            <!-- Single Button -->
+            {% for item in self.container %}
+            <div class="col-xs-12 col-md-6 my-2 mx-auto">
+
+              <details>
+                <summary class="w-100 btn btn-block" style="color: deeppink; border: 1px solid pink;" data-toggle="collapse" data-target="#bt{{ item.summary|slugify }}">{{ item.summary }}</summary>
+                <div id="bt{{ item.summary|slugify }}" class="collapse mt-4">
+                  {{ item.content|richtext }}
+                </div>
+              </details>
+            </div>
+            {% endfor %}
+            <!-- End Single Button -->
+        </div>
+        <!-- END RIGHT AREA -->
+    </div>
+  </section>

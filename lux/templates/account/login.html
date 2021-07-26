@@ -1,0 +1,117 @@
+{% extends "account/base.html" %}
+
+{% load i18n static account socialaccount %}
+
+
+{% block head_title %}{% trans "Sign In" %}{% endblock head_title %}
+
+ {% block bodyclass %}class="hold-transition login-page"{% endblock bodyclass %}
+
+
+{% block content %}
+<div class="login-box">
+  <!-- /.login-logo -->
+  <div class="card card-outline card-primary" style="border-top: 3px solid #000; border-bottom: 3px solid #000;">
+    <div class="card-header text-center bg-info">
+      <h1 style="font-family: serif;">{% trans "Login" %}</h1>
+    </div>
+    <div class="card-body">
+
+          {% if messages %}
+            <div class="alert alert-light">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true" class="text-black"><strong>&times;</strong></span>
+              </button><br>
+              <strong>{% trans "Messages" %}:</strong>
+              <ul class="errorlist">
+                {% for message in messages %}
+                <li>{{message}}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+
+      <form action="{% url 'account_login' %}" class="login" method="POST" >
+      {% csrf_token %}
+
+
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Username or email" name="login" autocomplete="email" autofocus required id="id_login">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-user mr-2"></span>
+              |
+              <span class="fas fa-envelope ml-2"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" class="form-control" placeholder="Password" name="password" autocomplete="current-password" required id="id_password">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-8" style="display: none;">
+            <div class="icheck-primary">
+              <input type="hidden" name="remember" id="id_remember">
+              <label for="remember">
+                Remember me
+              </label>
+            </div>
+          </div>
+          <!-- /.col -->
+          <div class="col-6">
+            <button type="submit" class="btn btn-primary btn-block">{% trans "Sign In" %}</button>
+          </div>
+          <div class="col-6">
+            <a href="/" class="btn btn-outline-danger btn-block" title="Go back to home">{% trans "Cancel" %}</a>
+          </div>
+          <!-- /.col -->
+        </div>
+      </form>
+
+<!-- Starts the Social Account provider -->
+    {% get_providers as socialaccount_providers %}
+    {% if socialaccount_providers %}
+    <p>{% blocktrans with site.name as site_name %}Please sign in with one
+    of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+    for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+
+    <div class="socialaccount_ballot">
+        {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+      <div class="login-or text-center mb-3">{% trans 'or' %}</div>
+    </div>
+
+    {% include "socialaccount/snippets/login_extra.html" %}
+
+    {% else %}
+      <hr class="bg-muted">
+    <p class="mt-2 text-muted">{% blocktrans %}If you have not created an account yet, then please
+    <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
+    {% endif %}
+<!-- Ends the Social Account provider -->
+      <hr class="bg-dark">
+      <p class="mb-1 mt-2 ">
+        <a href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+      </p>
+              {% if user.is_authenticated %}
+                  <div class="row py-3" style="background: #000;">
+                      <div class="col-12"><a href="{% url 'account_email' %}" style="color: steelblue;">Change E-mail</a></div>
+                      <div class="col-12"><a href="{% url 'account_logout' %}" style="color: steelblue;">Sign Out</a></div>
+                  </div>
+              {% else %}
+                      <!--div class="col-12"><a href="{# url 'account_login' #}">Sign In</a></div-->
+                      <!--div class="col-12"><span>If you don't have an account yet: <a href="{# url 'account_signup' #}" class="">Sign Up</a></span></div-->
+              {% endif %}
+    </div>
+    <!-- /.card-body -->
+  </div>
+  <!-- /.card -->
+</div>
+<!-- /.login-box -->
+{% endblock content %}
+

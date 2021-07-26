@@ -1,0 +1,347 @@
+{% load static wagtailuserbar wagtailcore_tags wagtailimages_tags wagtailsearchpromotions_tags cart_template_tags cache %}
+<!DOCTYPE html>
+<html class="no-js" lang="{% if page.meta_language %}{{ page.meta_language }}{% else %}en{% endif %}">
+    <head>
+        <meta charset="utf-8" />
+
+        <title>
+            {% block title %}
+                {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
+            {% endblock title %}
+            {% block title_suffix %}
+                {% with self.get_site.site_name as site_name %}
+                    {% if site_name %}- {{ site_name }}{% endif %}
+                {% endwith %}
+            {% endblock title_suffix %}
+        </title>
+
+        <meta name="viewport"content="width=device-width, initial-scale=1, user-scalable=no"/>
+        <meta http-equiv="X-UA-Compatible"content="ie=edge"/>
+        <meta name="author"content="Luis joel Pedroso"/>
+{% comment %}
+        <meta http-equiv="expires" content="86400"><!-- 56400 => 24 hours -->
+        <meta name="operator" content=" page.webmaster_name ">
+		<meta name="copyright" content="company">
+{% endcomment %}
+        <meta name="generator"content="Django - Wagtail - LUX"/>
+
+        {% if page.search_description %}
+        <meta name="description" content="{{ page.search_description }}"/>
+        {% endif %}
+        {% if page.meta_keywords %}
+        <meta name="keywords" content="{{ page.meta_keywords }}"/>
+        {% endif %}
+        {% if page.meta_revisit_after %}
+        <meta name="revisit-after"content="{{ page.meta_revisit_after }} Days"/>
+        {% endif %}
+
+        {% block metarobots %}
+            {% if page.meta_robots %}
+            <meta name="robots"content="{{ page.meta_robots }}"/>
+            {% else %}
+            <meta name="robots"content="index, nofollow"/>
+            {% endif %}
+        {% endblock metarobots %}        <meta name="theme-color" content="#F3F3F3">
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+        {% if settings.site_settings.Brand.favicon_image %}
+            {% image settings.site_settings.Brand.favicon_image fill-40x40 as favicon %}
+			<link rel="icon" href="{{ favicon.url }}">
+			<link rel="apple-touch-icon" href="{{ favicon.url }}">
+		{% else %}
+	  		<link rel="icon" href="{% static 'PWA/img/favicon.png' %}">
+	        <link rel="apple-touch-icon" href="{% static 'PWA/img/apple-touch-icon.png' %}">
+		{% endif %}
+
+		<link rel="apple-touch-startup-image" href="{% static 'PWA/img/apple-touch-startup-image.png' %}">
+        <link rel="manifest" href="{% static 'PWA/js/manifest.json' %}">
+
+    	{% block googleanalytics %}{% endblock googleanalytics %}
+       	{% block googleadsense %}{% endblock googleadsense %}
+        
+      	{# block favicons #}
+      	{# endblock favicons #}
+
+	    <!-- DELETE NEXT CACHE -->
+	    {# cache 604800 css_links #} <!-- 604800 seconds = 1 week -->
+
+		{% block officiallinks %}
+	  		<link href="{% static 'fonts/css/all.min.css' %}" rel="stylesheet">
+		  	<link href="{% static 'assets/libs/ionicons/css/ionicons.min.css' %}" rel="stylesheet">
+		  	<link href="{% static 'assets/libs/animate.css/animate.min.css' %}" rel="stylesheet">
+		  	<link href="{% static 'assets/libs/nivo-slider/css/nivo-slider.css' %}" rel="stylesheet">
+		  	<link href="{% static 'assets/libs/bootstrap4.6/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" >
+		  	<link href="{% static 'assets/libs/owl.carousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+		  	<link href="{% static 'assets/libs/venobox/venobox.css' %}" rel="stylesheet">
+		  	<link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
+		{% endblock officiallinks %}
+
+		{% block custom_css %}
+		{% endblock custom_css %}
+
+		{% block page_custom_css_file %}{% endblock page_custom_css_file %}
+
+		<!--  DELETE {# block styles #}{# endblock styles #} -->
+		<!--style type="text/css">
+			DELETE
+			{% block bodystyles %}
+			{% endblock bodystyles %}
+
+			{% block extra_css %}
+			{% endblock extra_css %}
+		</style!-->
+
+    </head>
+
+    <body {% block body_class %}{% endblock %}  id="page-top" data-spy="scroll" data-target="#navbar-example">
+        {% wagtailuserbar 'bottom-left' %}
+
+
+        {% block searchpromotions %}
+            {% get_search_promotions search_query as search_promotions %}
+            <ul>
+              {% for search_promotion in search_promotions %}
+              <li>
+                <a href="{% pageurl search_promotion.page %}"></a>
+                <h2>{{ search_promotion.title }}</h2>
+                <p>{{ search_promotion.description }}</p>
+              </li>
+              {% endfor %}
+            </ul>
+        {% endblock searchpromotions %}
+
+
+        {% block content %}
+        {% endblock content %}
+
+
+		{% block cartbtn %}  
+			<!-- .cart-bottom-sm -->
+			<button class="cart-bottom-sm hide-on-med-and-up" 
+				style="position: fixed;
+				  display: block;
+				  background: #fff;
+				  color: #000;
+				  padding: 0.6rem !important;
+				  font-size: 22px;
+				  border: 2px solid #fff;
+				  border-radius: 4px;
+				  bottom: 1.5rem;
+				  transition: background 0.3s;
+				  z-index: 9999999;
+				{% if request.user.is_staff %} left: 7rem; margin-bottom: .7rem; {% else %} left: 1.5rem;{% endif %}">
+
+				{% if request.user.is_authenticated %}
+			    <a href="{% url 'order-summary' %}" class="btn btn-outline-secondary border-0 basket-btn">
+		            <div id="basket-qty" class="basket-qty p-1">{{ request.user|cart_item_count }}</div>
+		              <i class="fas fa-cart-plus text-black mr-2 mt-1 fa-2x"></i>
+				</a>
+				{% else %}
+		            <a role="button" rel="nofollow" href="{% url 'account_login' %}"
+		              class="btn btn-outline-secondary border-0 basket-btn">
+		              <div id="basket-qty" class="basket-qty p-1">0</div>
+		              <i class="fas fa-cart-plus text-black mr-2 mt-1 fa-2x"></i>
+		            </a>
+		       	{% endif %}
+			</button>
+		{% endblock cartbtn %} 
+
+
+		{% if page.alert_about_cookies %}
+	        <div class="alert alert-info alert-dismissible fade show" role="alert" style="bottom: 4rem; left: 4rem; position: fixed;">
+				<h2><i class="fas fa-info-circle mr-2 text-info"></i>This website use Cookies.</h2>
+				<p>If you keep navigating you will accept.</p><hr>
+				<a rel="nofollow" href="/cookie-policy" target="_blank">Learn More<i class="fas fa-arrow-right ml-2"></i></a>
+	           	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	           		<span aria-hidden="true">&times;</span>
+	           	</button>
+	        </div>
+		{% endif %}
+
+
+
+
+        {% cache 2419200 backToTop %}
+  			<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+        {% endcache %}
+
+  	<!--div id="preloader"></div-->
+
+{% block base_scripts %}
+  <!-- Vendor JS Files -->
+  <script src="{% static 'assets/libs/jquery3.5.1/jquery3.5.1.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/libs/bootstrap4.6/js/bootstrap.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/libs/bootstrap4.5/js/bootstrap.bundle.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/libs/jquery.easing/jquery.easing.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/libs/php-email-form/validate.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/libs/waypoints/jquery.waypoints.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/libs/waypoints/infinite.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/libs/counterup/jquery.counterup.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/libs/owl.carousel/owl.carousel.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/libs/typed.js/typed.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/libs/isotope-layout/isotope.pkgd.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/libs/venobox/venobox.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/libs/sweetalert2-9.10.0/sweetalert2.all.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/libs/knob/jquery.knob.js' %}"></script>
+  <script src="{% static 'assets/libs/wow/wow.min.js' %}"></script>
+  <script src="{% static 'assets/libs/nivo-slider/js/jquery.nivo.slider.js' %}"></script>
+
+  <script src="{% static 'assets/save/particles/particles.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/save/particles/particle.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/save/appear/jquery.appear.js' %}"></script>
+
+  <script src="{% static 'assets/save/parallax/parallax.js' %}"></script>
+
+	<!-- AdminLTE3.1 Summernote -->
+	<script src="{% static 'AdminLTE3.1/plugins/summernote/summernote-bs4.min.js' %}"></script>
+
+  <script src="{% static 'custom.js' %}"></script>
+{% endblock base_scripts %}
+
+
+
+
+		  <script type="text/javascript">
+		    if ('serviceWorker' in navigator) {
+		      navigator.serviceWorker.register('./sw.js')
+		      .then( reg => console.log("DO SOMETHING", reg) )
+		      .catch(err => console.warn('Error:', err)
+		    }
+		  </script>
+
+		      <script type="text/javascript">
+		        $(()=>{
+		               
+
+		              // Hero typed
+		                if ($('.typed').length) {
+		                  var typed_strings = $(".typed").data('typed-items');
+		                  typed_strings = typed_strings.split(',')
+		                  new Typed('.typed', {
+		                    strings: typed_strings,
+		                    loop: true,
+		                    typeSpeed: 50,
+		                    backSpeed: 10,
+		                    backDelay: 2000
+		                  });
+		                }
+		            /*--------------------------
+		              Back to top button
+		            ----------------------------*/
+		            $(window).scroll(function() {
+		              if ($(this).scrollTop() > 100) {
+		                $('.back-to-top').fadeIn('slow');
+		              } else {
+		                $('.back-to-top').fadeOut('slow');
+		              }
+		            });
+
+		            $('.back-to-top').click(function(){
+		              $('html, body').animate({scrollTop : 0},500);
+		              return false;
+		            });
+
+		          var carouselNav = function() {
+		            $('.nav-promoted-items').owlCarousel({
+		    		  autoplay: true,
+		              center: true,
+		              loop: true,
+		              items:10,
+		              margin: 0,
+		              stagePadding: 0,
+		              nav: true,
+		              //navText: ['<i class="fas fa-arrow-left"></i>', '<i class="fas fa-arrow-right"></i>'],
+		              responsive:{
+		                0:{
+		                  items: 3
+		                },
+		                600:{
+		                  items: 5
+		                },
+		                992:{
+		                  items: 9
+		                }
+		              }
+		            });
+		          };
+		          carouselNav();
+		          var carousel3 = function() {
+		            $('.inline-items').owlCarousel({
+		    		  autoplay: true,
+		              center: true,
+		              loop: true,
+		              items:1,
+		              margin: 10,
+		              stagePadding: 0,
+		              nav: true,
+		              navText: ['<i class="fas fa-angle-left text-white"></i>', '<i class="fas fa-angle-right text-white"></i>'],
+		              responsive:{
+		                0:{
+		                  items: 1
+		                },
+		                600:{
+		                  items: 2
+		                },
+		                1000:{
+		                  items: 3
+		                }
+		              }
+		            });
+		          };
+		          carousel3();
+		        })
+		  // Clients carousel (uses the Owl Carousel library)
+		  $(".clients-carousel").owlCarousel({
+		    autoplay: true,
+		    dots: true,
+		    loop: true,
+		    responsive: {
+		      0: {
+		        items: 2
+		      },
+		      768: {
+		        items: 4
+		      },
+		      900: {
+		        items: 6
+		      }
+		    }
+		  });
+
+		   </script>
+
+<script>
+  $(function () {
+    //Add text editor
+    $('#compose-textarea').summernote()
+  })
+</script>
+
+    {% block document_page_js %}{% endblock document_page_js %}
+
+    {% block extra_js %}{% endblock extra_js %}
+
+    </body>
+</html>
+
+
+######################  messages.html #################
+{% load static %}
+
+  {% if messages %}
+      <div class="mt-5 container">
+        <center>
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <strong>{{ message }}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+          {% endfor %}
+        </center>
+      </div>
+  {% endif %}

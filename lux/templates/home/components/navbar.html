@@ -1,0 +1,142 @@
+{% load static menus_tags wagtailcore_tags wagtailimages_tags cart_template_tags %}
+
+{% menu_type "pgs" as navigation %}
+{% single_menu "sng" as singleMenu %}
+  <!-- ======= Navbar ======= -->
+  <nav id="navbar">
+    <div class="container-fluid d-flex">
+
+      <div class="logo mr-auto">
+        {% if settings.site_settings.Brand.show_brand_name %} 
+            <h2 class="h1 ml-3"><a href="/" class="brand-title text-white">
+              {% if settings.site_settings.Brand.brand_name %}{{ settings.site_settings.Brand.brand_name }}{% else %}LUX{% endif %}
+            </a></h2> 
+        {% elif settings.site_settings.Brand.show_logo_image %}
+            {% image settings.site_settings.Brand.brand_image_logo height-25 as logo_image %}
+            <a class="navbar-brand ml-3" href="/">
+              <img src="{{ logo_image.url }}" class="img-fluid" alt="{{ logo_image.alt }}">
+            </a>
+        {% else %}
+          <h2 class="h1 ml-3"><a href="/" class="brand-title text-white">LUX</a></h2> 
+        {% endif %} 
+      </div>
+
+      <nav class="nav-menu d-none d-lg-block">
+        <ul>
+
+          {% if singleMenu %}
+              {% for item in singleMenu.all %}
+                <li>
+                  <a  {% if item.link_url %} href="{{ item.link_url }}" 
+                      {% elif item.link_page %} href="{{ item.link_page.slug }}" {% endif %}
+                      {% if item.open_in_new_tab %} target="_blank" {% endif %} 
+                      {% if item.rel_attribute %} rel="{{ item.rel_attribute }}" {% endif %} >
+                      {{ item.title }}
+                  </a>
+                </li>
+              {% endfor %}
+          {% endif %}
+
+
+            <!-- Dropdown -->
+            {% if navigation %}
+              {% for single in navigation.all %}
+                  <li class="drop-down">
+                    <a href="#">{{ single.title }}<i class="fas fa-angle-down drop-icon ml-2"></i></a>
+                    <ul style="border: 1px solid #d4ca68;">
+                      {% for item in single.menu_items.all %}
+                          <li>
+                            <a {% if item.link_url %} 
+                                href="{{ item.link_url }}" 
+                                {% elif item.link_page %} 
+                                  href="{{ item.link_page.slug }}"
+                                {% endif %}  
+                                {% if item.open_in_new_tab == True %} target="_blank" {% endif %}
+                                {% if item.rel_attribute %} rel="{{ item.rel_attribute }}" {% endif %} >
+                              {{ item.link_title }}
+                              </a>
+                          </li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+              {% endfor %}
+            {% endif %}
+
+            {% if user.is_authenticated %}
+	          <li class="drop-down">
+	          	<a href="#"><i class="fas fa-user mr-2"></i>Account<!--i class="fas fa-angle-down drop-icon ml-2"></i--></a>
+	            <ul style="border: 1px solid #d4ca68;">
+
+	              {% if request.user.is_staff %}
+	              	<li class="drop-down" style="border-bottom: 1px solid #d4ca68;"><a href="#">Staff Options<i class="fas fa-arrow-right drop-icon ml-2"></i></a>
+	              		<ul style="border: 1px solid #d4ca68;">
+                        <li><a target="_blank" href="{% url 'styleguide' %}">Styleguide</a></li>
+                        <li><a target="_blank" href="/cpanel">APP CORE</a></li>
+                        <li><a target="_blank" href="{% url 'qrcoder:qr_view_all' %}">QR-Codes</a></li>
+                        <li><a target="_blank" href="/api/pages">API Pages</a></li>
+                        <li><a target="_blank" href="/api/images">API Images</a></li>
+                        <li><a target="_blank" href="/api/documents">API Documents</a></li>
+                        <li><a target="_blank" href="/sitemap.xml">Sitemap XML</a></li>
+  				          </ul>
+	              	</li>
+		            {% endif %}
+
+  		          <li><a href="{% url 'account_email' %}">Change E-mail</a></li>
+  		          <li><a href="{% url 'account_change_password' %}">Change Password</a></li>
+  		          <li><a href="{% url 'account_logout' %}"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a></li>
+	            </ul>
+	          </li>
+          	{% else %}
+          	  <li><a href="{% url 'account_login' %}"><i class="fas fa-sign-in-alt mr-2"></i>Login</a></li>
+          	{% endif %}
+
+
+	      {% if request.user.is_authenticated %}
+          <li class="hide-on-med-and-down">
+            <a role="button" rel="nofollow" href="{% url 'order-summary' %}"
+              class="btn btn-outline-secondary border-0 basket-btn">
+              <div id="basket-qty" class="basket-qty">{{ request.user|cart_item_count }}</div>
+              <div class="mr-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-cart3"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                </svg>
+              </div>
+            </a>
+          </li>
+	      {% else %}
+          <li class="hide-on-med-and-down">
+            <a role="button" rel="nofollow" href="{% url 'account_login' %}"
+              class="btn btn-outline-secondary border-0 basket-btn">
+              <div id="basket-qty" class="basket-qty">0</div>
+              <div class="mr-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-cart3"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                </svg>
+              </div>
+            </a>
+          </li>
+	      {% endif %}
+
+          <li>
+            <form class="form-inline">
+              <div class="input-group mb-2">
+                <input type="search" class="form-control nav-search-input radius-20 pl-2" aria-describedby="btn-nav" placeholder="Search for..." aria-label="Search for...">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-second radius-20 btn-search px-2"  id="btn-nav" type="button">
+                    <span class="fas fa-search"></span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </li>
+          
+
+        </ul>
+      </nav><!-- .nav-menu -->
+
+    </div>
+  </nav><!-- End Header -->

@@ -1,0 +1,28 @@
+{% load static wagtailcore_tags %}
+
+  <section id="accordeon" class="col-md-12">
+    <div class="container pb-5">
+          <div class="mb-5 text-center">
+             <h2 class="display-3">{{ self.section_title }}</h2>
+               <div class="div-line mb-2"></div>
+             <p class="h5 text-muted">{{ self.section_subtitle }}</p>
+            <hr>
+          </div>
+
+        <div class="col-xs-12 text-center">
+            <!-- Single Button -->
+            {% for item in self.container %}
+            <div class="col-xs-12 my-2">
+              <h2>
+                <button class="btn btn-outline-primary btn-block" style="font-family: serif; font-size: 28px;" data-toggle="collapse" data-target="#bt{{ item.question|slugify }}">{{ item.question }}</button>
+              </h2>
+              <div id="bt{{ item.question|slugify }}" class="collapse">
+                {{ item.answerd|richtext }}
+              </div>
+            </div>
+            {% endfor %}
+            <!-- End Single Button -->
+        </div>
+        <!-- END RIGHT AREA -->
+    </div>
+  </section><!-- End accordeon Section -->

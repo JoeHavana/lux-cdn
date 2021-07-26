@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags cart_template_tags %}
+
+
+
+{# cache 604800 favicon #}
+	{% block favicons %}
+	  {% image page.favicon fill-40x40 as favicon %}
+	  <link href="{{ home.HomePage.favicon.url }}" rel="icon">
+	  <link href="{{ home.HomePage.favicon.url }}" rel="apple-touch-icon">
+	{% endblock %}
+{# endcache #}
+
+
+{% block extra_css %}
+    .nav2{display: none!important;}
+    .rich-text p{color: gray;}
+.gallery {
+  display: block;
+  height: 270px;
+  position: relative; }
+
+  .gallery .icon {
+    width: 60px;
+    height: 60px;
+    margin: auto 35%;
+    z-index: 0;
+    opacity: 0;
+    position: absolute;
+    -moz-transition: all 0.6s ease;
+    -o-transition: all 0.6s ease;
+    -webkit-transition: all 0.6s ease;
+    -ms-transition: all 0.6s ease;
+    transition: all 0.6s ease;
+    background: #000;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    border-radius: 50%; 
+  }
+    .gallery .icon span {
+      color: #fff; }
+  .gallery:hover .icon, .gallery:focus .icon {
+    opacity: 1; }
+
+{% endblock extra_css %}
+
+{% block body_class %}{% endblock %}
+
+{% block content %}
+
+{% include 'layouts/navbar.html' %}
+
+
+
+
+
+
+
+  <!--Main layout-->
+  <main class="mt-5 pt-4">
+
+    
+    {% include 'messages.html' %}
+
+
+    <div class="container-fluid pb-5">
+
+      <!--Grid row-->
+      <div class="row mt-3">
+
+        <!-- Aside -->
+        <div class="col-md-2 hide-on-med-and-down">
+          <!---div id="arrow"><i class="btn btn-outline-secondary fas fa-arrow-left"></i></div>
+          <h2 class="text-center">Ads</h2-->
+            <div style="height: 15px; background-color: #000; "></div>
+          {% for card in item.images_of_item.all %}
+            {% image card.image width-600 as img %}
+            <img src="{{ img.url }}" alt="{{ img.alt }}" class="mb-1 w-100">
+          {% endfor %}
+        </div>
+        <!-- MEDIA COLUMN -->
+        <div class="col-md-6">
+        	{% if video %}
+              <video autoplay loop controls muted allow="accelerometer; autoplay; encripted-media; gyroscope; picture-in-picture" allowfullscreen class="w-100">
+                <source src="{{ video }}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            {% else %}
+            <img src="{{ item.main_picture_of_presentation }}">
+            {% endif %}
+
+          <!-- Images related carousel -->
+              <div class="related-images owl-carousel">
+                {% for card in item.images_of_item.all %}
+                  {% image card.image original as img %}
+                  <div class="w-100">
+                    <a href="{{ img.url }}" class="gallery image-popup img d-flex align-items-center" 
+                    ><img src="{{ img.url }}" class="w-100" alt="{{ img }}" caption="{{ img }}"> 
+                      <div class="icon mb-4 d-flex align-items-center justify-content-center">
+                        <span class="fas fa-eye"></span>
+                      </div>
+                    </a>
+                  </div>
+                {% endfor %}
+              </div>
+        </div>
+
+        <!-- Item Data - Right Column -->
+        <div class="col-md-4">
+          <div class="my-3">
+              {% if item.previos_price %}
+              <span class="border mr-2" title="Previos price">
+                <del class="badge text-muted">$&nbsp;{{ item.previos_price }}</del>
+              </span>
+              {% endif %}
+              {% if item.discount_price %}<span style="padding: .2rem; color: #000; font-weight: 600; border-radius: 2px; background: lime;">Save ${{ item.discount_price }}</span>
+              {% endif %}
+              <span class="mr-2" title="Price" style="padding: .2rem; color: #000; font-weight: 600; border-radius: 2px; background: red;">
+                $&nbsp;{{ item.real_price }}
+              </span>
+              {% if item.smart_quantity_of_downloads_to_display %}
+              <span class="mr-2" title="Total of downloads" style="border: 1px solid blue;padding: .2rem;border-radius: 2px;">
+                <p class="text-primary badge">{{ item.smart_quantity_of_downloads_to_display }}</p>
+                <i class="text-primary fas fa-download"></i>
+              </span>
+              {% endif %}
+              <br>
+              <a rel="nofollow" data-toggle="modal" href="#modalRating">
+                <span class="mr-2" title="Rate it!">
+                  {% if item.smart_rating_stars_to_display == "1" %}
+                  <i class="text-warning fa fa-star"></i>
+                  {% elif item.smart_rating_stars_to_display == "1.5" %}
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star-half-alt"></i>
+                  {% elif item.smart_rating_stars_to_display == "2" %}
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  {% elif item.smart_rating_stars_to_display == "2.5" %}
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star-half-alt"></i>
+                  {% elif item.smart_rating_stars_to_display == "3" %}
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  {% elif item.smart_rating_stars_to_display == "3.5" %}
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star-half-alt"></i>
+                  {% elif item.smart_rating_stars_to_display == "4" %}
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  {% elif item.smart_rating_stars_to_display == "4.5" %}
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star-half-alt"></i>
+                  {% elif item.smart_rating_stars_to_display == "5" %}
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  <i class="text-warning fa fa-star"></i>
+                  {% endif %}
+                </span>
+              </a>
+          </div>
+          <div class="my-3">
+                <h1 class="mr-1 display-4 text-info">{{ item.title }}</h1>
+{% comment %}
+              <a href="#">
+                <p class="badge mr-1">SPAN 2</p>
+              </a>
+              <a href="#">
+                <p class="badge mr-1">SPAN 3</p>
+              </a>
+{% endcomment %}
+          </div>
+            <div class="mt-5" id="add-to-cart-form"> 
+              {% if request.user.is_authenticated %}
+              <form  method="POST" action="{{ item.get_add_directly_to_cart_url }}">{% csrf_token %}
+                <div class="row d-flex justify-content-left">
+                  <div class="col-md-9 col-xs-12 my-2">
+                    <button class="btn btn-outline-dark btn-block" type="submit">Add "{{ item.title }}" to your cart
+                      <i class="fas fa-shopping-cart ml-1"></i>
+                    </button>
+                  </div>
+                  <div class="col-md-9 col-xs-12 my-2">
+                    <a class="btn btn-outline-dark btn-block" href="{{ item.the_product_file.url }}" download style="color: #000">Get it Now!
+                      <i class="fas fa-download ml-1"></i>
+                    </a>
+                  </div>
+                </div>
+              </form>
+              <!-- /.Form -->
+              {% else %}
+                <a class="btn btn-md btn-outline-danger my-0 col-md-7" href="{% url 'account_login' %}" type="submit">You have to Login first
+                  <i class="fas fa-user ml-1"></i>
+                </a>
+              {% endif %}
+          </div>
+          <p class="my-4 h4">{{ item.full_description|richtext|truncatewords:25 }}
+          	<br>
+            <a rel="nofollow" data-toggle="modal" href="#modalDescription">
+            ...More information</a>
+          </p>
+        </div>
+      </div>
+      <!--Grid row-->
+    </div>
+
+
+
+          <!-- Modal Rating -->
+          <div class="modal fade mt-5 pb-4" id="modalRating" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered " role="document">
+                <div class="modal-content">
+                  <div class="modal-header" style="background-color: #000;">
+                    <p class="h4 modal-title text-center text-white" id="modalLabelmo">{{item.title|title}}</p>
+                    <button type="button" class="text-white close" data-dismiss="modal" aria-label="Close">
+                      <span class="text-white" aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <form action="{{ item.set_rating_url }}" method="POST">{% csrf_token %}
+                    <div class="modal-body">
+                      <input class="form-control mb-2" style="width: 100%;" name="rate_item" type="number" min="0" max="5" step="0.5" placeholder="Give a rate between 1-5" required>
+                      <textarea class="form-control" name="message" rows="5" data-rule="required" placeholder="Please, tell us what do you think about {{item.title|title}}" ></textarea>
+                    </div>
+                    <div class="modal-footer row">
+                      <button type="submit" class="mx-2 btn btn-outline-dark" title="Vote!"><i class="fas fa-vote-yea"></i></button>
+                      <button type="button" class="btn btn-outline-dark mr-3" data-dismiss="modal">Close</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          <!-- Modal Description -->
+          <div class="modal fade mt-5 pb-4" id="modalDescription" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered " role="document">
+              <div class="modal-content">
+                <div class="modal-header" style="background-color: #000;">
+                  <p class="h4 modal-title text-center text-white" id="modalLabelmo">{{item.title}}</p>
+                  <button type="button" class="text-white close" data-dismiss="modal" aria-label="Close">
+                    <span class="text-white" aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p><b>{{ item.full_description|richtext }}</b></p>
+                </div>
+                <div class="modal-footer row">
+                  <button type="button" class="mx-2 btn btn-outline-dark" onclick="window.print()"><i class="fas fa-print"></i></button>
+                  <button type="button" class="btn btn-outline-dark mr-3" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+  </main>
+  <!--Main layout-->
+
+{% endblock content %}
+
+{% block extra_js %}
+  <script type="text/javascript">
+    $(()=>{
+          var carousel2 = function() {
+            $('.related-images').owlCarousel({
+              center: true,
+              loop: true,
+              items:1,
+              margin: 5,
+              stagePadding: 0,
+              nav: true,
+              navText: ['<i class="fa-arrow-left"></i>', '<i class="fa-arrow-right"></i>'],
+              responsive:{
+                0:{
+                  items: 1
+                },
+                600:{
+                  items: 2
+                },
+                1000:{
+                  items: 3
+                }
+              }
+            });
+          };
+          carousel2();
+    });
+  </script>
+{% endblock extra_js %}

@@ -1,0 +1,69 @@
+{% extends "account/base.html" %}
+
+{% load i18n static account socialaccount %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+ {% block bodyclass %}class="hold-transition login-page"{% endblock bodyclass %}
+
+{% block content %}
+
+<div class="login-box">
+  <div class="card card-outline card-primary" style="border-top: 3px solid #000; border-bottom: 3px solid #000;">
+
+      <div class="card-header text-center bg-info">
+        <h1>{% trans "Sign Up" %}</h1>
+      </div>
+
+      <div class="card-body">
+            {% if messages %}
+              <div class="alert alert-light">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true" class="text-black"><strong>&times;</strong></span>
+                </button><br>
+                <strong>Messages:</strong>
+                <ul class="errorlist">
+                  {% for message in messages %}
+                  <li>{{message}}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+
+      {% get_providers as socialaccount_providers %}
+
+      {% if socialaccount_providers %}
+      <p>{% blocktrans with site.name as site_name %}Please sign in with one
+      of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+      for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+
+      <div class="socialaccount_ballot">
+          {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+        <div class="login-or text-center mb-3">{% trans 'or' %}</div>
+      </div>
+
+      {% include "socialaccount/snippets/login_extra.html" %}
+
+      {% endif %}
+            
+  	<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+  	  {% csrf_token %}
+  	  {{ form.as_p }}
+
+            <hr>
+
+         
+  	  {% if redirect_field_value %}
+  	  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  	  {% endif %}
+  	  <button type="submit" class="btn btn-block btn-primary primaryAction mb-3">{% trans "Sign Up" %} &raquo;</button>
+  	</form>
+      <a href="/" class="btn btn-block btn-outline-danger mb-3" style="letter-spacing: 3px; border: 1px solid red;">Cancel</a>
+
+    <p class="text-muted">{% blocktrans %}Already have an account? <br>
+      Then please <a href="{{ login_url }}"><b>sign in</b></a>.{% endblocktrans %}</p>
+  </div>
+</div>
+</div>
+
+{% endblock content %}

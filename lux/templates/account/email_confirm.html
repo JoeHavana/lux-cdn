@@ -1,0 +1,40 @@
+{% extends "account/base.html" %}
+
+{% load i18n static account socialaccount %}
+
+{% block head_title %}{% trans "Confirm E-mail Address" %}{% endblock %}
+
+{% block bodyclass %}class="hold-transition login-page"{% endblock bodyclass %}
+
+
+{% block content %}
+<div class="login-box">
+  <!-- /.login-logo -->
+  <div class="card card-outline card-primary" style="border-top: 3px solid #000; border-bottom: 3px solid #000;">
+    <div class="card-header text-center bg-info">
+	<h1>{% trans "Confirm E-mail Address" %}</h1>
+    </div>
+    <div class="card-body">
+
+{% if confirmation %}
+
+{% user_display confirmation.email_address.user as user_display %}
+
+<p class="text-dark">{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
+
+<form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+{% csrf_token %}
+    <button type="submit" class="btn btn-block btn-outline-primary">{% trans 'Confirm' %}</button>
+</form>
+
+{% else %}
+
+{% url 'account_email' as email_url %}
+
+<p class="text-muted">{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url }}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
+
+{% endif %}
+</div>
+</div>
+</div>
+{% endblock %}

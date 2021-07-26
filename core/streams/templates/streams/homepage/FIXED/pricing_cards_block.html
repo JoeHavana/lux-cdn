@@ -1,0 +1,33 @@
+{% load static wagtailcore_tags wagtailimages_tags %} <!-- This is to work width |pipes -->
+
+    <!-- Section #36 -->
+    <!-- ======= Pricing Section 2======= -->
+    <section id="pricing-2" class="pricing-area area-padding">
+      <div class="container">
+          <div class="mb-4 text-center">
+             <h2 class="display-3">{{ self.section_title }} 2</h2>
+               <div class="div-line mb-2"></div>
+             <div>{{ self.section_subtitle|richtext }}</div>
+             <hr>
+          </div>
+        <div class="row">
+
+			{% for card in self.cards %}
+	          <div class="col-md-4 col-sm-4 mx-auto col-xs-12 mb-5">
+	            <div class="pricing_card active">
+	          	  {% if card.label %} <!-- #0078ff -->
+	              	<span class="label px-5" style="background: {{ card.label_color }} none repeat scroll 0 0;">{{ card.label }}</span>
+	              {% endif %}
+	              <h3>{{ card.card_title }} <br /> <span>${{ card.amount }} / {{ card.amount_for }}</span></h3>
+	              <div>{{ card.content_text|richtext }}</div>
+		              	<a href="{% if card.internal_page_url %}{{ card.internal_page_url.url }}{% else %}{{ card.url }}{% endif %}"
+		                {% if card.open_in_a_new_tab %} target="_blank" {% endif %}
+		                {% if card.rel_attribute %} rel="{{ card.rel_attribute }}" {% endif %}
+		                class="btn btn-outline-{% if card.card_active %}danger{% else %}primary{% endif %} px-5 mb-4" style="border-radius: 20px;">{{ card.call_to_action }}</a>
+	            </div>
+	          </div>
+          	{% endfor %}
+
+        </div>
+      </div>
+    </section>

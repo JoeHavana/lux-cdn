@@ -1,0 +1,40 @@
+{% load static wagtailcore_tags wagtailimages_tags %} <!-- This is to work width |pipes -->
+
+{% image self.background_image fill-2000x1000-c100 as background_image %}
+  <!-- Section INTRO #1 -->
+   <div id="home" class="intro bg-image mb-4" style="background-image: url({{ background_image.url }})"><!-- .route -->
+    <!--div class="overlay-white"></div-->
+    <div class="intro-content display-table">
+      <div class="table-cell">
+        <div class="container py-4">
+          <h2 class="intro-title mb-4" style="color: {{ self.title_color }}; font-family: serif;">{{ self.title }}</h2>
+          <p class="intro-subtitle" style="color: {{ self.subtitle_color }}"><span class="text-slider-items">{{ self.typed_subtitle }}</span><strong class="text-slider"></strong></p>
+
+          <div class="container mt-5">
+            <div class="row">
+	            <div class="col-md-12">
+		          {% if  self.button_url %}
+		            <p>
+		          		{% for btn in self.button_url %}
+							<a href="{{ btn.URL }}"
+								class="btn p-3 px-5 py-4 mr-md-2 mb-3 scale" 
+								style="{% if btn.outline_color_only == True %}
+											border: 1px solid {{ btn.background_color }};
+											color: {{ btn.text_color }}; font-weight: 700; font-size: 24px; letter-spacing: 1.5px;
+										{% elif btn.outline_color_only == False %}
+											background-color: {{ btn.background_color }};
+											color: {{ btn.text_color }}; font-weight: 700; font-size: 24px; letter-spacing: 1.5px;
+										{% endif %}" 
+								{% if btn.open_in_a_new_tab == True %} target="_blank" {% endif %}
+								{% if btn.rel_attribute %} rel="{{ btn.rel_attribute }}"{% endif %}>
+							{{ btn.call_to_action }}</a>
+						{% endfor %}
+					</p>
+		          {% endif %}
+	            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

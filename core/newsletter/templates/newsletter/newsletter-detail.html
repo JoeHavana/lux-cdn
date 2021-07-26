@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% crispy form form.helper %}
+
+{% block content %}
+
+<div class="jumbotron">
+	<h1 class=" text-center">{{ newsletter.subject }}</h1>
+	<p class="text-center">{{ newsletter.body }}</p>
+</div>
+<div class="container">
+	<center>
+		<a href="{% url 'control_newsletter' %}">Type a new Newsletter</a>
+		<nav>
+			<p><a href="{% url 'newsletter_edit' newsletter.id %}"><strong>Edit</strong></a></p>
+			<p><a href="{% url 'newsletter_delete' newsletter.id %}"><strong>Delete</strong></a></p>
+		</nav>
+	</center>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+
+	{% if subscribed_successfully %}
+	  <script type="text/javascript">
+	          Swal.fire({
+	            title: 'Subscribed Successfully.',
+	            icon: 'success',
+	            timer: 3500,
+	            footer: '<strong><a href="{% url 'account_login' %}" rel="nofollow">Login here</a></strong>',
+	            confirmButtonText: 'OK'
+	          });
+	  </script>
+	{% elif email_already_exists %}
+	  <script type="text/javascript">
+	          Swal.fire({
+	            title: 'Sorry, that email already exists.',
+	            icon: 'warning',
+	            timer: 4500,
+	            footer: '<strong><a href="{% url 'account_login' %}" rel="nofollow">Login here</a></strong>',
+	            confirmButtonText: 'OK'
+	          });
+	  </script>
+	{% endif %}
+
+{% endblock extra_js %}

@@ -1,0 +1,49 @@
+{% extends "account/base.html" %}
+
+{% load i18n static account socialaccount %}
+
+{% block head_title %}{% trans "Sign Out" %}{% endblock %}
+
+{% block bodyclass %}class="hold-transition login-page"{% endblock bodyclass %}
+
+{% block content %}
+
+<div class="login-box">
+  <!-- /.login-logo -->
+  <div class="card card-outline card-primary" style="border-top: 3px solid #000; border-bottom: 3px solid #000;">
+    <div class="card-header text-center bg-info">
+      <h1>{% trans "Logout" %}</h1>
+    </div>
+    <div class="card-body">
+          {% if messages %}
+            <div class="alert alert-light">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true" class="text-black"><strong>&times;</strong></span>
+              </button><br>
+              <strong>Messages:</strong>
+              <ul class="errorlist">
+                {% for message in messages %}
+                <li>{{message}}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+	<p class="text-secondary">{% trans 'Are you sure you want to sign out?' %}</p>
+
+	<form method="post" action="{% url 'account_logout' %}">
+	  {% csrf_token %}
+	  {% if redirect_field_value %}
+	  <div class="row">
+		  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+		  {% endif %}
+		  <button type="submit" class="btn btn-outline-danger btn-block" style="border: 1px solid red">{% trans 'Logout' %}</button>
+	      <a href="/" class="btn btn-outline-danger btn-block" style="letter-spacing: 3px; border: 1px solid red;">{% trans 'Cancel' %}</a>
+      </div>
+	</form>
+</div>
+</div>
+</div>
+
+
+{% endblock %}

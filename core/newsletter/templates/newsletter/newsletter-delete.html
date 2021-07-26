@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% crispy form form.helper %}
+
+{% block content %}
+
+<div class="container">
+	<center>
+		<form method="POST">{% csrf_token %}
+			<button class="btn btn-danger"><strong>Are you sure, you want to delete this newsletter?</strong></button>
+			<p><a href="{% url 'newsletter_list' %}" class="btn btn-info"><strong>Cancel</strong></a></p>
+			{{ form|crispy }}
+		</form>
+	</center>
+</div>
+
+{% endblock content %}

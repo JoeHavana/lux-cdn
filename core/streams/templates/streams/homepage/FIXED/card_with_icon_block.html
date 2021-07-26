@@ -1,0 +1,33 @@
+{% load static wagtailcore_tags wagtailimages_tags %} <!-- This is to work width |pipes -->
+
+
+    
+	<section class="pb-4">
+		<div class="container pb-5">
+	        <div class="mb-4 text-center">
+	           <h2 class="display-3">{{ self.section_title }}</h2>
+               <div class="div-line mb-2"></div>
+	           <p class="h5 text-muted">{{ self.section_subtitle }}</p>
+	           <hr>
+	        </div>
+    		<div class="row">
+				{% for card in self.cards %}
+    			<div class="col-md-2 col-xs-12 mb-2 hoverable mx-auto" style="border: 2.5px solid {{ card.main_color }}; border-radius: 4px;">
+    				<a href="{% if card.internal_page_url %} {{ card.internal_page_url }} {% else %} {{ card.url }}{% endif %}"
+    				{% if card.open_in_a_new_tab %}	 target="_blank" {% endif %} 
+    				{% if card.rel_attribute %} rel=" {% for rel_att in card.rel_attribute %}{{ rel_att }},{% endfor %}" {% endif %}>
+						<div class="text-center">
+							<div class="d-flex justify-content-center align-items-center mt-1">
+								<i class="{{ card.icon }} fa-5x my-4" style="color: {{ card.main_color }}"></i>
+							</div>
+							<div>
+								<h3 style="color: {{ card.main_color }}">{{ card.card_title }}</h3>
+								<p style="color: gray">{{ card.card_text }}</p>
+							</div>
+						</div>
+					</a>
+				</div>
+				{% endfor %}
+			</div>
+    	</div>
+    </section>

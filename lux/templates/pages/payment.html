@@ -1,0 +1,166 @@
+{% load static  %} 
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>{% block title %}Select Payment{% endblock title %}</title>
+
+  <!-- Favicon Icon -->
+  <link rel="shortcut icon" href="{% static 'img/favicon/favicon.png' %}">
+  <link rel="apple-touch-icon" href="{% static 'img/favicon/favicon.png' %}">
+  <!--Import Google Icon Font
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
+
+  <link rel="stylesheet" href="{% static 'fonts/fontawesome-free/css/all.min.css' %}"><!-- AdminLITE -->
+
+
+  <!-- Bootstrap core CSS v4.5.3 -->
+  <link href="{% static 'libs/bootstrap-4.5.3/css/bootstrap.min.css' %}" rel="stylesheet">
+  <!-- Materialize without carousel css -->
+  <link href="{% static 'libs/materialize/css/materialize.css' %}" rel="stylesheet"  media="screen,projection"/>
+  <!-- Your custom styles (optional) -->
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  <link href="{% static 'css/helpers.css' %}" rel="stylesheet">
+
+  <!-- Swappable Style Theme -->
+  <link id="mystylesheet" rel="stylesheet" type="text/css" href="{% static 'css/color-theme/light.css' %}">
+</head>
+
+<body style="user-select: none;">
+
+
+
+<nav id="main-nav" class="black fixed-top">
+  <!-- Main Nav -->
+    <div id="wrapper" class="nav-wrapper container">
+      <!-- Left -->
+      <a href="{% url 'home' %}" class="brand-logo left"><span class="blue-text">COASTLINE</span><span class="text-red">GAMES</span></a>
+      <!-- Mobile Buttom -->
+      <a href="#!" data-target="mobile-navbar-select-payment" class="sidenav-trigger right"><i id="mobile-btn" class="fas fa-bars"></i></a>
+
+
+
+
+
+      <!-- Right -->
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+          {% if user.is_staff %}
+            <li><a class="btn nav-link bg-info rounded waves-effect" href="/cPanel">ADMIN</a></li>
+            <li><a class="btn bg-red nav-link" href="/cPanel">DESIGNE</a></li>
+          {% endif %}
+
+          <li>
+            <a href="{% url 'checkout' %}" style="padding-right: 5px !important;">
+              <i class="fas fa-home blue-text fa-2x"></i>
+            </a>
+          </li>
+          <li>
+            <a class="btn transparent waves-effect waves-light" style="margin-left: 3px !important; padding-left: 0px !important;" href="{% url 'home' %}">
+               <b>HOME PAGE</b>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+  </nav>
+  <!-- Mobile Sidebar -->
+  <ul class="sidenav black" id="mobile-navbar-select-payment" style="z-index: 99999 !important;">
+    <li class="fixed-top transparent">
+       <!-- Sidnav Trigger -->
+       <button data-target="slide-out" class="ml-3 btn-floating sidenav-trigger border transparent modal-trigger">
+        <i class="fas fa-cog fa-2x"></i>
+       </button>
+    </li><br>
+    {% if user.is_staff %}
+      <br>
+        <li><a class="btn nav-link bg-info rounded waves-effect" href="/cPanel">ADMIN</a></li>
+        <li><a class="btn bg-red nav-link" href="/cPanel">DESIGNE</a></li>
+    {% endif %}
+    <li><a href="{% url 'home' %}" class="btn transparent border-lime"><center><i class="fas fa-home blue-text fa-2x"></i> HOME PAGE</center></a></li>
+  </ul>
+  <!--============================= ./Navbar Ends ==========================================-->
+
+
+
+
+{% block content %}
+
+  <!--Main layout-->
+  <main class="mt-5 pt-4">
+    <div class="container wow fadeIn">
+
+      <!-- Heading -->
+      {% include 'messages.html' %}
+      <!--Grid row-->
+      <div class="row mt-5">
+
+
+
+            <!--Card content-->
+              <div class="s12 col-md-12">
+                <p class="h2 text-center text-black mb-12 mt-5">Select a payment option first, please.</p>
+                <div class="d-block my-3 s12 col-md-12 left">
+                  <a href="{% url 'stripe-payment' %}" class="w-100 btn-large waves-effect waves-light"><strong>Stripe Payment</strong></a>
+                </div>
+                <div class="d-block my-3 s12 col-md-12 right">
+                  <a href="{% url 'paypal-payment' %}" class="w-100 btn-large waves-effect waves-light"><strong>PayPal Payment</strong></a>
+                </div>
+
+              </div>
+
+
+      </div>
+      <!--Grid row-->
+
+    </div>
+  </main>
+  <!--Main layout-->
+
+{% endblock content %}
+
+<footer>
+  
+    <div class="footer-area-bottom" style="margin-top: 10rem; ">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="copyright text-center">
+              <p class="h4">
+                &copy; Copyright <strong class="text-info">COASTLINE<span class="text-red">GAMES</span></strong>. All Rights Reserved
+              </p>
+            </div>
+            <div class="text-center mb-5" >
+              <p class="h2">Software Created with <img src="{% static 'img/proudly.jpg' %}" width="30" alt="American Flag in heart style"> by <a href="#" target="_blank">Joel Pedroso</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</footer>
+
+    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'libs/materialize/js/materialize.min.js' %}"></script>
+    <script type="text/javascript">
+
+      $(function(){
+        
+          // Materialize Navbar
+          $(".dropdown-trigger").dropdown(); //Activates The Dropdown Button
+
+          $('.sidenav').sidenav(); //Activates The Mobile Sidebar
+
+          $('.tap-target').tapTarget(); // Activates the Feature-Discovery Button
+
+          $('.sidenav').sidenav();// Activates the Sidebar Button
+
+          $('.modal').modal();
+
+        });
+    </script>
+</body>
+
+</html>

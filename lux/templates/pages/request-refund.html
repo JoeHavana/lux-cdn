@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static cart_template_tags %}
+
+{% block content %}
+
+{% include 'layouts/navbar.html' %}
+
+  <!--Main layout-->
+  <main class="py-4">
+
+    
+    {% include 'messages.html' %}
+
+
+    <section>
+      <div class="container mt-5">
+
+
+
+
+          <center>
+            <p class="h1 text-white">Request Refund</p>
+          </center>
+
+          <div class="mt-5">
+            <form method="POST">{% csrf_token %}
+              {{ form }}
+              <button class="btn btn-block btn-outline-primary mt-4" type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+      </section>
+  </main>
+  <!--Main layout-->
+
+
+{% endblock content %}
+
+

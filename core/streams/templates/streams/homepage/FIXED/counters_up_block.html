@@ -1,0 +1,26 @@
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+    <!-- Section #22 -->
+    {% image self.background_image fill-2000x1000-c100 as bg_image %}
+    <div class="section-counter parallax bg-image" style="background-image: url({{ bg_image.url }})">
+      <div class="overlayout"></div>
+      <div class="container">
+        <div class="row">
+          {% for item in self.counters %}
+          <div class="col-sm-3 col-lg-3 mx-auto">
+            <div class="counter-box py-4 pt-md-0 border">
+              <div class="counter-icon" style="background: {{ item.header_color }}">
+                <span class="icon-circled"><i class="{{ item.icon }}"></i></span>
+              </div>
+              <div class="counter-num">
+                <p class="counter">{{ item.number }}</p>
+                <span class="counter-text">{{ item.comment }}</span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+
+        </div>
+      </div>
+    </div><!-- End Counter Section -->
+

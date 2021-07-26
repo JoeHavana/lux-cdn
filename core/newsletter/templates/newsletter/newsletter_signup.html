@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% crispy form form.helper %}
+
+{% block content %}
+
+<div class="jumbotron">
+	<h2 class=" text-center">Subscribe our Newsletter</h2>
+</div>
+<div class="container">
+	{% include 'messages.html' %}
+	<form class="text-center" method="POST" action="{% url 'newsletter_signup' %}">{% csrf_token %}
+		<div class="input-group">
+			{% crispy form %}
+			<span class="input-group-btn">
+				<button class="btn btn-secondary" type="submit">Subscribe</button>
+			</span>
+		</div>
+	</form>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+
+	{% if subscribed_successfully %}
+	  <script type="text/javascript">
+	          Swal.fire({
+	            title: 'Subscribed Successfully.',
+	            icon: 'success',
+	            timer: 3500,
+	            footer: '<strong><a href="{% url 'account_login' %}" rel="nofollow">Login here</a></strong>',
+	            confirmButtonText: 'OK'
+	          });
+	  </script>
+	{% elif email_already_exists %}
+	  <script type="text/javascript">
+	          Swal.fire({
+	            title: 'Sorry, that email already exists.',
+	            icon: 'warning',
+	            timer: 4500,
+	            footer: '<strong><a href="{% url 'account_login' %}" rel="nofollow">Login here</a></strong>',
+	            confirmButtonText: 'OK'
+	          });
+	  </script>
+	{% endif %}
+
+{% endblock extra_js %}

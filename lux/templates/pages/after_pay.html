@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static cart_template_tags %}
+
+
+{% block content %}
+
+{% include 'home/components/navbar.html' %}
+
+  <!--Main layout-->
+  <main class="mt-5 pt-4">
+
+
+
+    <div class="container mt-5">
+
+      {% include 'messages.html' %}
+
+        <section>
+          <!-- Next Table will be hidden in md-screen-and-up -->
+          <table class="table text-nowrap text-center table-responsive hide-on-med-and-up">
+          {% if object %}
+          <center><p class="h1 text-color-theme-1 mb-4">Thanks a lot. We hope you enjoy it.</p></center>
+          {% endif %}
+            <thead>
+              <tr>
+                  <th class="order-thead-txt" scope="col">Item Title</th>
+                <th class="order-thead-txt text-center" scope="col">Trailer</th>
+                <th class="order-thead-txt text-center" scope="col">Get it Now!</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order_item in object.items.all %}
+              <tr>  
+                <td class="order-values">{{ order_item.item.title }}</td>
+                <td class="order-values"><video src="{{ order_item.item.video_trailer.url }}" width="150" controls muted autoplay></video></td>
+                <td class="order-values"><a href="{{ order_item.item.the_product_file.url }}" download><i class="fas fa-download"></i> Download It</a></td>
+              </tr>
+              {% empty %}
+          <center>
+            <div class="container mb-4 hide-on-med-and-up">
+              <div class="card">
+                <div class="card-header" style="border: 1px solid red;"><p class="h1">Your cart is Empty.</p></div>
+                <br>
+                <a href="/" class="btn btn-block btn-outline-info"><b>Let's Go to Shopping.</b></a>
+              </div>
+            </div>
+          </center>
+              {% endfor %}
+          </table>
+    <!------------------------------------------------------------------------------------------------------------->
+
+
+
+
+
+
+
+
+          <!-- Next Table will be hidden in mobiles, and shown on Desktops -->
+          <table class="table text-nowrap text-center hide-on-med-and-down">
+            <thead>
+              <tr>
+                <th class="order-thead-txt text-center" scope="col">Item Title</th>
+                <th class="order-thead-txt text-center" scope="col">Trailer</th>
+                <th class="order-thead-txt text-center" scope="col">Get it Now!</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order_item in object.items.all %}
+              <tr>
+                <td class="order-values">{{ order_item.item.title }}</td>
+                <td class="order-values"><video src="{{ order_item.item.video_trailer.url }}" width="150" controls muted autoplay></video></td>
+                <td class="order-values"><a href="{{ order_item.item.the_product_file.url }}" download><i class="fas fa-download"></i> Download It</a></td>
+              </tr>
+              {% empty %}
+          <center>
+            <div class="container mb-4 hide-on-med-and-down">
+              <div class="card">
+                <div class="card-header" style="border: 1px solid red;"><p class="h1">Your cart is Empty.</p></div>
+                <br>
+                <a href="/" class="btn btn-block btn-outline-info"><b>Let's Go to Shopping.</b></a>
+              </div>
+            </div>
+          </center>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          {% if object %}
+
+            {% if not_orders %}
+                <h1>Not Order Items</h1>
+            {% else %}
+                <div class="container">
+                  <a href="/" class="w-100 mb-2 btn transparent border text-lime waves-effect waves-teal">Continue Shopping <i class="fas fa-cart-arrow-down"></i></a>
+                </div>
+            {% endif %}
+          {% endif %}
+        </section>
+
+
+
+    </div>
+  </main>
+  <!--Main layout-->
+
+{% endblock content %}
+

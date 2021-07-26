@@ -1,0 +1,94 @@
+{% load static footer_tags wagtailcore_tags wagtailimages_tags cart_template_tags cache %}
+
+{% menu_type "pgs" as footer_columns %} <!-- navigation -->
+{% brand_info "sng" as brandInfo %} <!-- singleMenu -->
+
+
+  {# cache 604800 footer #}
+    <footer id="footer" class="section-footer">
+      <div class="container">
+        <div class="row">
+
+        {% if brandInfo or footer_columns %}
+          <div class="col-lg-3 col-xs-12 mx-auto">
+            <div class="mb-4">
+              {% if settings.site_settings.Brand.show_brand_name %} 
+                  <a href="/"><p class="h4 tag-footer text-center">{{ settings.site_settings.Brand.brand_name }}</p></a> 
+              {% elif settings.site_settings.Brand.show_logo_image %}
+                  {% image settings.site_settings.Brand.brand_image_logo height-25 as logo_image %}
+                  <a class="navbar-brand ml-3" href="/">
+                    <img src="{{ logo_image.url }}" class="img-fluid" alt="{{ logo_image.alt }}">
+                  </a>
+              {% endif %} 
+              <hr class="bg-info">
+              {% if brandInfo %}
+                  <div class="text-info mt-3">{{ brandInfo.text_intro|richtext }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+            {% if footer_columns %}
+              {% for column in footer_columns.all %}
+                <div class="col-lg-3 col-xs-12 mx-auto">
+                  <div class="mb-4 ml-md-5">
+                    <p class="h2" style="{% if column.title_color %}{{ column.title_color }}{% else %}color: steelblue;{% endif %}">{{ column.title }}</p>
+                    <ul class="list-unstyled">
+                      {% for link in column.column_items.all %}
+                      <li><a rel="{{ link.rel_attribute }}" target="_blank" href="{{ link.link_url }}"><i class="{{ link.link_icon_code }}"></i><span class="ml-2" style="color: {% if link.link_title_color_code %}{{ link.link_title_color_code }}{% endif %}">{{ link.link_title }}</span></a></li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endif %}<!-- end brandInfo or footer_columns -->
+        </div><!-- end .row -->
+      </div><!-- end .container -->
+      
+      {% if brandInfo.social_items %}
+      <div class="container">
+        <div class="row">
+          <div class="row col-12 justify-content-around">
+            <ul class="theme-footer-social list-unstyled mt-3">
+              {% for icon in brandInfo.social_items.all %}
+                <li><a rel="{% if icon.rel_attribute %}{{ icon.rel_attribute }}{% else %}nofollow{% endif %}" href="{{ icon.link_url }}" target="_blank" class="hoverable"><span class="{{ icon.social_icon_code }}"></span></a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div><!-- end .row -->
+      </div><!-- end .container -->
+      {% endif %}
+
+
+      <div class="row">
+        <div class="col-md-12 text-center">
+          {% if brandInfo %}
+            <div class="mb-4">
+              <p class="h2" style="color: cyan;">Have a Questions?</p>
+              <div class="footer-contact mb-3">
+                <ul class="list-unstyled">
+
+                  {% if brandInfo.company_direction %}
+                  <li class="mb-2"><i class="fas fa-map-marked-alt text-info"></i><span class="ml-2 text-info">{{ brandInfo.company_direction }}</span></li>
+                  {% endif %}
+                  <li class="mb-2">
+                    {% if brandInfo.company_phone %}
+                    <a rel="nofollow" href="callto:{{ brandInfo.company_phone }}" class="mr-5"><i class="fas fa-phone"></i><span class="ml-2">{{ brandInfo.company_phone }}</span></a>
+                    {% endif %}
+                    {% if brandInfo.company_email %}
+                    <a rel="nofollow" href="mailto:{{ brandInfo.company_email }}"><i class="fas fa-envelope"></i><span class="ml-2">{{ brandInfo.company_email }}</span></a>
+                    {% endif %}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          {% endif %}
+          <p class="mb-0">
+            Copyright &copy;&nbsp;{{ settings.site_settings.Brand.brand_name }}&nbsp;<script>document.write(new Date().getFullYear());</script> All rights reserved 
+            <!--| This website have been created with&nbsp;<i class="fas fa-heart" aria-hidden="true"></i>&nbsp;by&nbsp;<a href="https://www.github.com/" target="_blank" rel="nofollow" class="footer-logo">me</a>  -->
+          </p>
+        </div>
+      </div>
+    </footer>
+
+  {# endcache #}

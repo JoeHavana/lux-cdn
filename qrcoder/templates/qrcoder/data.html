@@ -1,0 +1,274 @@
+{% load static wagtailuserbar wagtailcore_tags wagtailimages_tags wagtailsearchpromotions_tags cache %}
+<!-- & SYMBOL => &amp; -->
+<!DOCTYPE html>
+<html class="no-js" lang="{% if page.meta_language %}{{ page.meta_language }}{% else %}es{% endif %}">
+    <head>
+        <meta charset="utf-8" />
+        <title>
+            {% block title %}
+                {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
+            {% endblock title %}
+            {% block title_suffix %}
+                {% with self.get_site.site_name as site_name %}
+                    {% if site_name %}- {{ site_name }}{% endif %}
+                {% endwith %}
+            {% endblock title_suffix %}
+        </title>
+        <meta name="viewport"content="width=device-width, initial-scale=1, user-scalable=no"/><meta http-equiv="X-UA-Compatible"content="ie=edge"/><meta name="author"content="Luis joel Pedroso"/>
+    
+
+      {% block favicons %}
+      {% endblock favicons %}
+
+
+<!-- ADMINLTE -->
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="{% static 'AdminLTE3.1/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="{% static 'AdminLTE3.1/plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'AdminLTE3.1/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'AdminLTE3.1/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'AdminLTE3.1/dist/css/adminlte.min.css' %}">
+<!-- ADMINLTE -->
+
+  <!--link rel="stylesheet" type="text/css" href="{# static 'assets/css/styles.css' #}"-->
+  <style type="text/css">
+    button.back-to-top {
+  position: fixed;
+  display: none;
+  background: transparent;
+  box-shadow: 0 0 25px #fff;
+  color: steelblue;
+  padding: 1rem !important;
+  font-size: 18px;
+  border: 2px solid steelblue;
+  border-radius: 4px;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  transition: background 0.3s;
+  z-index: 9999999999; }
+
+@media (max-width: 768px) {
+  button.back-to-top {
+    bottom: 1.5rem;
+    right: 1.5rem; } }
+
+button.back-to-top:hover {
+  background: steelblue;
+  color: #fff;
+  cursor: pointer; }
+
+  </style>
+</head>
+
+    <body  class=" {% block body_class %} d-print-nonetemplate-homepage  hold-transition sidebar-collapse sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed {% endblock %} ">
+        {# wagtailuserbar 'bottom-left' #}
+
+  <div class="wrapper">
+
+  <!-- Navbar -->
+  {% if user.is_active %}
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light sticky-top d-print-none">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="/" class="nav-link"><i class="fas fa-spinner noPrint text-info" title="Home Page"></i>
+
+        </a>
+      </li>
+    </ul>
+
+
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+
+
+      <li class="nav-item border pl-2 mr-2 pt-1 pb-0 dropdown d-flex float-left pointer mt-1 mr-0" title="Account">
+        <i class="fas fa-user text-info" style="font-size: 24px;"></i>
+        <a id="dropdownSubMenu2" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
+        </a>
+        <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-top shadow">
+          <li>
+            {% if user.is_active %}
+            <div class="nav-item ">
+              <a class="nav-link text-secondary" href="{% url 'account_logout' %}"  style="font-size: 18px; font-style: italic;">Logout</a>
+            </div>
+            {% endif %}
+          </li>
+        </ul>
+      </li>
+            {% if user.is_staff %}
+            <li><a class="btn nav-link transparent border rounded blue-text waves-effect" rel="nofollow" target="_blank" href="/admin/qrcoder/qrcoder/create/"><b>Create a new QR Code here</b></a></li>
+            {% endif %}
+
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+  {% endif %}
+
+
+        {% block content %}
+
+    <div class="container content-wrapper mt-5">
+      <!-- Content Header (Page header) -->
+{% if user.is_staff %}
+      {% if error %}
+        <section>
+          <h5>{{error}}
+            {% if user.is_staff %}
+            <a class="btn nav-link transparent border rounded blue-text waves-effect" href="/cPanel/qrcoder/qrcoder/add/">here</a>
+            {% endif %}
+          </h5>
+        </section>
+      {% endif %}
+
+          <!-- Main content -->
+          <section>
+            <div >
+              <div class="row">
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <div class="col-sm-12 text-center mt-5 jumbotron">
+                        <h1>YOUR QR CODES</h1>
+                      </div>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                      <table id="example2" class="text-center table table-bordered table-striped">
+                        <thead>
+                          <tr>
+                            <th class="text-center">QR Picture</th>
+                            <th class="text-center">Name:</th>
+                            <th class="text-center">Subject:</th>
+                            <th class="text-center">Data:</th>
+                            <th class="text-center">Click to Download</th>
+                            <th class="text-center">Edit</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for qr in all_qrcodes %}
+                            <tr>
+                              <td class="text-center">
+                                {{ image_tag_1|safe }}{{ qr.save_img_as }}{{ image_tag_2|safe }}
+                              </td>
+                              <td><p><strong>{{ qr.name }}</strong> </p></td>
+                              <td><p><strong>{{ qr.subject }}</strong> </p></td>
+                              <td><p><strong>{{ qr.data }}</strong> </p></td>
+                              <td>
+                                <p class="mt-2 btn btn-outline-primary">{{ download_1|safe }}{{ qr.save_img_as }}{{download_2|safe}}Download as .jpg<i class="fas fa-download ml-3" title="download this picture"></i></a>
+                                </p>
+                              </td>
+                              <td><a rel="nofollow" href="/admin/qrcoder/qrcoder/"><strong><i class="fas fa-cogs"></i></strong> </a></td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+          </section>
+          <!-- /.content -->
+  {% endif %}
+
+    </div>
+    <!-- /.content-wrapper -->
+
+        {% endblock content %}
+
+        {% cache 2419200 backToTop %}
+      <button class="back-to-top"><i class="fas fa-chevron-up"></i></button>  
+        {% endcache %}
+
+    </div>
+
+
+
+
+
+
+
+
+
+    {% block officialscripts %}
+    {% endblock officialscripts %}
+
+<!-- REQUIRED SCRIPTS FOR ADMINLTE -->
+  <!-- jQuery -->
+  <script src="{% static 'AdminLTE3.1/plugins/jquery/jquery.min.js' %}"></script>
+  <!-- Bootstrap -->
+  <script src="{% static 'AdminLTE3.1/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <!-- overlayScrollbars -->
+  <script src="{% static 'AdminLTE3.1/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+  <!-- AdminLTE App -->
+  <script src="{% static 'AdminLTE3.1/dist/js/adminlte.js' %}"></script>
+
+  <!-- OPTIONAL SCRIPTS -->
+  <script src="{% static 'AdminLTE3.1/dist/js/demo.js' %}"></script>
+
+  <!-- PAGE PLUGINS -->
+  <!-- jQuery Mapael -->
+  <script src="{% static 'AdminLTE3.1/plugins/jquery-mousewheel/jquery.mousewheel.js' %}"></script>
+  <script src="{% static 'AdminLTE3.1/plugins/raphael/raphael.min.js' %}"></script>
+  <script src="{% static 'AdminLTE3.1/plugins/jquery-mapael/jquery.mapael.min.js' %}"></script>
+  <script src="{% static 'AdminLTE3.1/plugins/jquery-mapael/maps/usa_states.min.js' %}"></script>
+  <!-- ChartJS -->
+  <script src="{% static 'AdminLTE3.1/plugins/chart.js/Chart.min.js' %}"></script>
+
+  <!-- PAGE SCRIPTS -->
+  <script src="{% static 'AdminLTE3.1/dist/js/pages/dashboard2.js' %}"></script>
+
+  <!-- DataTables -->
+  <script src="{% static 'AdminLTE3.1/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'AdminLTE3.1/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'AdminLTE3.1/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+  <script src="{% static 'AdminLTE3.1/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<!-- REQUIRED SCRIPTS FOR ADMINLTE ENDS-->
+
+<!-- page script -->
+<script>
+  $(function () {
+
+            /*--------------------------
+              Back to top button
+            ----------------------------*/
+            $(window).scroll(function() {
+              if ($(this).scrollTop() > 100) {
+                $('.back-to-top').fadeIn('slow');
+              } else {
+                $('.back-to-top').fadeOut('slow');
+              }
+            });
+
+            $('.back-to-top').click(function(){
+              $('html, body').animate({scrollTop : 0},500);
+              return false;
+            });
+
+
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+
+    {% block extra_js %}
+    {% endblock extra_js %}
+
+    </body>
+</html>

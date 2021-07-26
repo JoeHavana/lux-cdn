@@ -1,0 +1,51 @@
+{% load wagtailcore_tags  %}
+
+{% if countcatgnav2 >= 8 %}
+  <nav id="nav2" class="navbar navbar-expand-lg nav2 hide-on-med-and-down">
+      <ul class="navbar-nav mr-auto ul-2 nav-promoted-items owl-carousel">
+        <li id="allctgs" class="nav-item mx-2 li-2 item">
+          <a class="nav-link py-1" href="{% url 'all-categories' %}" tabindex="-1" aria-disabled="true">ALL</a>
+        </li>
+        {% for item in nav2categories %}
+        <li class="nav-item mx-2 li-2 item">
+          <a class="nav-link btn py-1" href="{{ item.get_absolute_url }}" tabindex="-1" aria-disabled="true">
+            {{ item.category_name|title }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+  </nav>
+{% endif %}
+
+
+  <nav id="nav2" class="navbar navbar-expand-lg nav2 hide-on-med-and-down">
+      <ul class="navbar-nav mr-auto ul-2 nav-promoted-items owl-carousel">
+        <li id="allctgs" class="nav-item mx-2 li-2 item">
+          <a class="nav-link py-1" href="/" tabindex="-1" aria-disabled="true">ALL</a>
+        </li>
+        <li class="nav-item mx-2 li-2 item">
+          <a class="nav-link btn py-1" href="/" tabindex="-1" aria-disabled="true">Catg-1</a>
+        </li>
+        <li class="nav-item mx-2 li-2 item">
+          <a class="nav-link btn py-1" href="/" tabindex="-1" aria-disabled="true">Catg-2</a>
+        </li>
+        <li class="nav-item mx-2 li-2 item">
+          <a class="nav-link btn py-1" href="/" tabindex="-1" aria-disabled="true">Catg-3</a>
+        </li>
+        <li class="nav-item mx-2 li-2 item">
+          <a class="nav-link btn py-1" href="/" tabindex="-1" aria-disabled="true">Catg-4</a>
+        </li>
+        <li class="nav-item mx-2 li-2 item">
+          <a class="nav-link btn py-1" href="/" tabindex="-1" aria-disabled="true">Catg-5</a>
+        </li>
+        <li class="nav-item mx-2 li-2 item">
+          <a class="nav-link btn py-1" href="/" tabindex="-1" aria-disabled="true">Catg-6</a>
+        </li>
+        <li class="nav-item mx-2 li-2 item">
+          <a class="nav-link btn py-1" href="/" tabindex="-1" aria-disabled="true">Catg-7</a>
+        </li>
+        <li class="nav-item mx-2 li-2 item">
+          <a class="nav-link btn py-1" href="/" tabindex="-1" aria-disabled="true">Catg-8</a>
+        </li>
+      </ul>
+  </nav>
